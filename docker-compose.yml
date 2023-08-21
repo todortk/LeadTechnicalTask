@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: lead
+      POSTGRES_PASSWORD: lead128pass
+      POSTGRES_DB: school
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    ports:
+      - "5192:5192"
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/school
+      SPRING_DATASOURCE_USERNAME: lead
+      SPRING_DATASOURCE_PASSWORD: lead128pass
+
+volumes:
+  postgres-data:
