@@ -7,6 +7,12 @@ services:
       POSTGRES_USER: lead
       POSTGRES_PASSWORD: lead128pass
       POSTGRES_DB: school
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lead -d school"]
+      interval: 5s
+      timeout: 5s
+      retries: 50
+
     ports:
       - "5432:5432"
     volumes:
@@ -17,6 +23,9 @@ services:
     ports:
       - "5192:5192"
     depends_on:
+      postgres:
+        condition: service_healthy
+    links:
       - postgres
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/school
